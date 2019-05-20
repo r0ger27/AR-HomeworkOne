@@ -56,15 +56,39 @@
 		4B88EA822291A40D00B35A4D /* AR-HomeworkOne */ = {
 			isa = PBXGroup;
 			children = (
-				4B88EA832291A40D00B35A4D /* AppDelegate.swift */,
-				4B88EA852291A40D00B35A4D /* art.scnassets */,
-				4B88EA872291A40D00B35A4D /* ViewController.swift */,
-				4B88EA892291A40D00B35A4D /* Main.storyboard */,
-				4B88EA8C2291A41000B35A4D /* Assets.xcassets */,
-				4B88EA8E2291A41000B35A4D /* LaunchScreen.storyboard */,
-				4B88EA912291A41000B35A4D /* Info.plist */,
+				4BC1570E2292826C00A3FCB8 /* View */,
+				4BC1570F2292829400A3FCB8 /* Controller */,
+				4BC15710229282AE00A3FCB8 /* Supporting Files */,
 			);
 			path = "AR-HomeworkOne";
+			sourceTree = "<group>";
+		};
+		4BC1570E2292826C00A3FCB8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4B88EA892291A40D00B35A4D /* Main.storyboard */,
+				4B88EA8E2291A41000B35A4D /* LaunchScreen.storyboard */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		4BC1570F2292829400A3FCB8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4B88EA872291A40D00B35A4D /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		4BC15710229282AE00A3FCB8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4B88EA832291A40D00B35A4D /* AppDelegate.swift */,
+				4B88EA852291A40D00B35A4D /* art.scnassets */,
+				4B88EA8C2291A41000B35A4D /* Assets.xcassets */,
+				4B88EA912291A41000B35A4D /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
