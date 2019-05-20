@@ -1,4 +1,4 @@
-# RockModQuiz
+# Simple AR App
 Homework # 4 for the Switbook.ru, Webinar #5
 
 In this application, we have to make a small location (yard) in Augmented Reality. You can use a variety of free textures, but you need to programmatically create trees and arrange them in this yard.
