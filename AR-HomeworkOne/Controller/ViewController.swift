@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController {
     
     // MARK: - Outlets
     @IBOutlet var sceneView: ARSCNView!
@@ -24,12 +24,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         sceneView.delegate = self
         sceneView.autoenablesDefaultLighting = true
-        
-        placeYard()
+        sceneView.debugOptions = [.showFeaturePoints]
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        configuration.planeDetection = [.horizontal]
         sceneView.session.run(configuration)
     }
     
@@ -43,56 +44,64 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 extension ViewController {
     
     // MARK: - Methods
-    func placeYard() {
-        let scene = SCNScene(named: "art.scnassets/UnusualYard.scn")!
-        let node = scene.rootNode.clone()
-        let tree = loadTree()
-        
-        sceneView.scene.rootNode.addChildNode(node)
-        sceneView.scene.rootNode.addChildNode(tree)
-        
-        node.runAction(.repeatForever(.rotateBy(x: 0, y: 0, z: 0, duration: 3)))
-    }
-    
     func loadTree() -> SCNNode {
         let nodeTree = SCNNode()
         
-        let nodeCylinder = SCNNode(geometry: SCNCylinder(radius: 0.15, height: 2.1))
+        let nodeCylinder = SCNNode(geometry: SCNCylinder(radius: 0.15, height: 1.5))
         nodeCylinder.position.y = 1
         
         let nodeSphere = SCNNode(geometry: SCNSphere(radius: 1))
         nodeSphere.position.y = 2.4
         
         nodeCylinder.geometry?.firstMaterial?.diffuse.contents = UIColor.brown
-        nodeSphere.geometry?.firstMaterial?.diffuse.contents = UIColor.green
+        nodeSphere.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "art.scnassets/Crown.png")
         
         nodeTree.addChildNode(nodeCylinder)
         nodeTree.addChildNode(nodeSphere)
         
-        nodeTree.position = SCNVector3(2.9, -2.0, -3.6)
-        nodeTree.scale = SCNVector3(0.2, 0.2, 0.2)
-        
-        let nodeTreeOne = nodeTree.clone()
-        nodeTreeOne.position = SCNVector3(-9.0, -2.0, 2.0)
-        nodeTreeOne.scale = SCNVector3(1, 1, 1)
-        
-        let nodeTreeTwo = nodeTree.clone()
-        nodeTreeTwo.position = SCNVector3(-23.0, -2.0, 3.2)
-        nodeTreeTwo.scale = SCNVector3(1, 1, 1)
-        
-        let nodeTreeThree = nodeTree.clone()
-        nodeTreeThree.position = SCNVector3(-28.1, -2.0, -6.6)
-        nodeTreeThree.scale = SCNVector3(1, 1, 1)
-        
-        let nodeTreeFour = nodeTree.clone()
-        nodeTreeFour.position = SCNVector3(-6.0, -2.0, 8.0)
-        nodeTreeFour.scale = SCNVector3(1, 1, 1)
-        
-        nodeTree.addChildNode(nodeTreeOne)
-        nodeTree.addChildNode(nodeTreeTwo)
-        nodeTree.addChildNode(nodeTreeThree)
-        nodeTree.addChildNode(nodeTreeFour)
-        
         return nodeTree
+    }
+}
+
+extension ViewController: ARSCNViewDelegate {
+    
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        
+        DispatchQueue.global().async {
+            let yard = self.createYard(with: planeAnchor)
+            yard.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
+            node.addChildNode(yard)
+        }
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        guard let yardNode = node.childNodes.first else { return }
+        
+        yardNode.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
+    }
+    
+    func createYard(with planeAnchor: ARPlaneAnchor) -> SCNNode {
+        let scene = SCNScene(named: "art.scnassets/UnusualYard.scn")!
+        let node = scene.rootNode.clone()
+        
+        let tree = loadTree()
+        tree.position = SCNVector3(0.01, -0.02, 0.02)
+        tree.scale = SCNVector3(0.02, 0.02, 0.02)
+        
+        let nodeTreeOne = tree.clone()
+        nodeTreeOne.position = SCNVector3(-0.15, -0.02, 0.1)
+        nodeTreeOne.scale = SCNVector3(0.02, 0.02, 0.02)
+        
+        let nodeTreeTwo = tree.clone()
+        nodeTreeTwo.position = SCNVector3(0.15, -0.02, 0.15)
+        nodeTreeTwo.scale = SCNVector3(0.02, 0.02, 0.02)
+        
+        node.addChildNode(tree)
+        node.addChildNode(nodeTreeOne)
+        node.addChildNode(nodeTreeTwo)
+        
+        return node
     }
 }
