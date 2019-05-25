@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     
     // MARK: - Vars
     let configuration = ARWorldTrackingConfiguration()
+    var yarsIsPlaced = false
     
     // MARK: - Override methods
     override func viewDidLoad() {
@@ -67,11 +68,14 @@ extension ViewController: ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        guard !yarsIsPlaced else { return }
         
         DispatchQueue.global().async {
             let yard = self.createYard(with: planeAnchor)
             yard.position = SCNVector3(planeAnchor.center.x, 0, planeAnchor.center.z)
             node.addChildNode(yard)
+            
+            self.yarsIsPlaced = true
         }
     }
     
